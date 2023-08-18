@@ -4,29 +4,12 @@
 # Alpaca keys
 from __future__ import annotations
 
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("data_key", help="data source api key")
-parser.add_argument("data_secret", help="data source api secret")
-parser.add_argument("data_url", help="data source api base url")
-parser.add_argument("trading_key", help="trading api key")
-parser.add_argument("trading_secret", help="trading api secret")
-parser.add_argument("trading_url", help="trading api base url")
-args = parser.parse_args()
-DATA_API_KEY = args.data_key
-DATA_API_SECRET = args.data_secret
-DATA_API_BASE_URL = args.data_url
-TRADING_API_KEY = args.trading_key
-TRADING_API_SECRET = args.trading_secret
-TRADING_API_BASE_URL = args.trading_url
-
-print("DATA_API_KEY: ", DATA_API_KEY)
-print("DATA_API_SECRET: ", DATA_API_SECRET)
-print("DATA_API_BASE_URL: ", DATA_API_BASE_URL)
-print("TRADING_API_KEY: ", TRADING_API_KEY)
-print("TRADING_API_SECRET: ", TRADING_API_SECRET)
-print("TRADING_API_BASE_URL: ", TRADING_API_BASE_URL)
+DATA_API_KEY = "AKVL1WYLODMWDE12P1ZU"
+DATA_API_SECRET = "moEx4nX1blJllYRjaaXUEe4tfiKRXMUO5p36kcpB"
+DATA_API_BASE_URL = "https://api.alpaca.markets"
+TRADING_API_KEY = "PKTGPC8QGDUTDQ82FIKK"
+TRADING_API_SECRET = "dYZGuYqYISXv0MNmPuoNEeLpz6bK1tndWcHcIhCf"
+TRADING_API_BASE_URL = "https://paper-api.alpaca.markets"
 
 from finrl.meta.env_stock_trading.env_stocktrading_np import StockTradingEnv
 from finrl.meta.paper_trading.alpaca import PaperTradingAlpaca
@@ -38,7 +21,8 @@ from finrl.config_tickers import DOW_30_TICKER
 
 ticker_list = DOW_30_TICKER
 env = StockTradingEnv
-# if you want to use larger datasets (change to longer period), and it raises error, please try to increase "target_step". It should be larger than the episode steps.
+# if you want to use larger datasets (change to longer period), and it raises error, 
+# please try to increase "target_step". It should be larger than the episode steps.
 ERL_PARAMS = {
     "learning_rate": 3e-6,
     "batch_size": 2048,

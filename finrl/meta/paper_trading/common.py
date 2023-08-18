@@ -287,13 +287,15 @@ class AgentPPO(AgentBase):
         get_action = self.act.get_action
         convert = self.act.convert_action_for_env
         for i in range(horizon_len):
+            # print(f"ar_state: {type(ary_state)}")
             state = torch.as_tensor(ary_state, dtype=torch.float32, device=self.device)
             action, logprob = (t.squeeze(0) for t in get_action(state.unsqueeze(0))[:2])
 
             ary_action = convert(action).detach().cpu().numpy()
-            ary_state, reward, done, _ = env.step(ary_action)
+            ary_state, reward, done, extra, _ = env.step(ary_action)
+            # print(f'Unpacking Values: done: {done}, extra: {extra}')
             if done:
-                ary_state = env.reset()
+                ary_state = env.reset()[0]
 
             states[i] = state
             actions[i] = action
@@ -406,7 +408,7 @@ class PendulumEnv(gym.Wrapper):  # a demo of custom gym env
         seed=None,
         options=None,
     ) -> np.ndarray:  # reset the agent in env
-        return self.env.reset()
+        return self.env.reset()[0][np.newaxis, :]
 
     def step(
         self, action: np.ndarray
@@ -423,7 +425,7 @@ def train_agent(args: Config):
     agent = args.agent_class(
         args.net_dims, args.state_dim, args.action_dim, gpu_id=args.gpu_id, args=args
     )
-    agent.states = env.reset()[np.newaxis, :]
+    agent.states = env.reset()[0][np.newaxis, :]
 
     evaluator = Evaluator(
         eval_env=build_env(args.env_class, args.env_args),
@@ -530,7 +532,7 @@ def get_rewards_and_steps(
 ) -> (float, int):  # cumulative_rewards and episode_steps
     device = next(actor.parameters()).device  # net.parameters() is a Python generator.
 
-    state = env.reset()
+    state = env.reset()[0]
     episode_steps = 0
     cumulative_returns = 0.0  # sum of rewards in an episode
     for episode_steps in range(12345):
@@ -541,7 +543,7 @@ def get_rewards_and_steps(
         action = (
             tensor_action.detach().cpu().numpy()[0]
         )  # not need detach(), because using torch.no_grad() outside
-        state, reward, done, _ = env.step(action)
+        state, reward, done, extra, _ = env.step(action)
         cumulative_returns += reward
 
         if if_render:
@@ -657,17 +659,18 @@ class DRLAgent:
 
         # test on the testing env
         _torch = torch
-        state = environment.reset()
+        state = environment.reset()[0]
         episode_returns = []  # the cumulative_return / initial_account
         episode_total_assets = [environment.initial_total_asset]
         with _torch.no_grad():
             for i in range(environment.max_step):
-                s_tensor = _torch.as_tensor((state,), device=device)
+                # state =     torch.as_tensor(ary_state, dtype=torch.float32, device=self.device)
+                s_tensor = _torch.as_tensor((state,), dtype=torch.float32, device=device)
                 a_tensor = act(s_tensor)  # action_tanh = act.forward()
                 action = (
                     a_tensor.detach().cpu().numpy()[0]
                 )  # not need detach(), because with torch.no_grad() outside
-                state, reward, done, _ = environment.step(action)
+                state, reward, done, extra, _ = environment.step(action)
 
                 total_asset = (
                     environment.amount
