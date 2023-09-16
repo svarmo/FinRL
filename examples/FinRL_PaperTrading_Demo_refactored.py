@@ -4,11 +4,11 @@
 # Alpaca keys
 from __future__ import annotations
 
-DATA_API_KEY = "AKVL1WYLODMWDE12P1ZU"
-DATA_API_SECRET = "moEx4nX1blJllYRjaaXUEe4tfiKRXMUO5p36kcpB"
+DATA_API_KEY = "<ALPACA_KEY>"
+DATA_API_SECRET = "<ALPACA_SECRET>"
 DATA_API_BASE_URL = "https://api.alpaca.markets"
-TRADING_API_KEY = "PKTGPC8QGDUTDQ82FIKK"
-TRADING_API_SECRET = "dYZGuYqYISXv0MNmPuoNEeLpz6bK1tndWcHcIhCf"
+TRADING_API_KEY = "<ALPACA_PAPER_TRADING_KEY>"
+TRADING_API_SECRET = "<ALPACA_PAPER_TRADING_SECRET>"
 TRADING_API_BASE_URL = "https://paper-api.alpaca.markets"
 
 from finrl.meta.env_stock_trading.env_stocktrading_np import StockTradingEnv
@@ -34,12 +34,12 @@ ERL_PARAMS = {
     "eval_times": 1,
 }
 
-# Set up sliding window of 6 days training and 2 days testing
 import datetime
 from pandas.tseries.offsets import BDay  # BDay is business day, not birthday...
 
 today = datetime.datetime.today()
 
+# Set up sliding window of 20 days training and 10 days testing
 TEST_END_DATE = (today - BDay(1)).to_pydatetime().date()
 TEST_START_DATE = (TEST_END_DATE - BDay(10)).to_pydatetime().date()
 TRAIN_END_DATE = (TEST_START_DATE - BDay(1)).to_pydatetime().date()
@@ -77,7 +77,7 @@ train(
     API_BASE_URL=DATA_API_BASE_URL,
     erl_params=ERL_PARAMS,
     cwd="./papertrading_erl",  # current_working_dir
-    break_step=1e5,
+    break_step=1e6,
 )
 
 account_value_erl = test(
