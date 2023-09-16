@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 SINGLE_TICKER = ["AAPL"]
 
 # Dow 30 constituents in 2021/10

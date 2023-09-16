@@ -41,9 +41,9 @@ from pandas.tseries.offsets import BDay  # BDay is business day, not birthday...
 today = datetime.datetime.today()
 
 TEST_END_DATE = (today - BDay(1)).to_pydatetime().date()
-TEST_START_DATE = (TEST_END_DATE - BDay(1)).to_pydatetime().date()
+TEST_START_DATE = (TEST_END_DATE - BDay(10)).to_pydatetime().date()
 TRAIN_END_DATE = (TEST_START_DATE - BDay(1)).to_pydatetime().date()
-TRAIN_START_DATE = (TRAIN_END_DATE - BDay(5)).to_pydatetime().date()
+TRAIN_START_DATE = (TRAIN_END_DATE - BDay(20)).to_pydatetime().date()
 TRAINFULL_START_DATE = TRAIN_START_DATE
 TRAINFULL_END_DATE = TEST_END_DATE
 
@@ -116,6 +116,8 @@ train(
     cwd="./papertrading_erl_retrain",
     break_step=2e5,
 )
+
+print("===== Done re-training =====")
 
 action_dim = len(DOW_30_TICKER)
 state_dim = (
