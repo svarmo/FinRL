@@ -287,13 +287,11 @@ class AgentPPO(AgentBase):
         get_action = self.act.get_action
         convert = self.act.convert_action_for_env
         for i in range(horizon_len):
-            # print(f"ar_state: {type(ary_state)}")
             state = torch.as_tensor(ary_state, dtype=torch.float32, device=self.device)
             action, logprob = (t.squeeze(0) for t in get_action(state.unsqueeze(0))[:2])
 
             ary_action = convert(action).detach().cpu().numpy()
             ary_state, reward, done, extra, _ = env.step(ary_action)
-            # print(f'Unpacking Values: done: {done}, extra: {extra}')
             if done:
                 ary_state = env.reset()[0]
 
@@ -664,7 +662,6 @@ class DRLAgent:
         episode_total_assets = [environment.initial_total_asset]
         with _torch.no_grad():
             for i in range(environment.max_step):
-                # state =     torch.as_tensor(ary_state, dtype=torch.float32, device=self.device)
                 s_tensor = _torch.as_tensor((state,), dtype=torch.float32, device=device)
                 a_tensor = act(s_tensor)  # action_tanh = act.forward()
                 action = (
